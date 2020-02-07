@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import argparse
 
+#funcion para leer archivo
 def leer_archivo( archivo ):
     try:
       with open(archivo,"r") as fc:
@@ -11,20 +12,24 @@ def leer_archivo( archivo ):
       texto_limpio=""
     return texto_limpio
 
+#funcion para leer stopwords
 def leer_stop(archivo_stopwords):
   try:
-    stopwords=[]
     with open(archivo_stopwords,"r") as fh:
-      texto = fh.readlines()
-    except:
-      texto=""
-  return texto
+      stopwords = fh.readlines()
+      stopwords=[p.strip('\n') for p in stopwords]
+      set_sw=set(stopwords)
+  except:
+      set_sw=set()
+  return set_sw
 
+#funcion para contar palabras
 def contar_palabras( texto ):
     palabras = texto.split(" ") 
     dp = dict() 
     for palabra in palabras: 
-        p = palabra.strip(",.") 
+        p = palabra.strip(",.")
+        p=p.lower() 
         if p in dp: 
            dp[p]+= 1
         else: 
@@ -34,6 +39,17 @@ def contar_palabras( texto ):
       del(dp[''])
     return dp
 
+##funcion de limpiar stopwords al diccionario
+def limpiar(dp,words):
+  print(len(dp))
+  diccionario={}
+  for (k,v) in dp.items():
+    if k not in words:
+      diccionario[k]=v
+  print(len(diccionario))
+  return diccionario
+
+##funcion para imprimir diccionario
 def imprime_diccionario(dp, minimo):
   lista=[ (k,v) for k,v in dp.items() if v>=minimo]
   lista_ordenada=sorted(lista, key= lambda x:x[1], reverse=True)
@@ -42,11 +58,14 @@ def imprime_diccionario(dp, minimo):
   return
 
 def main( archivo,minimo):
-    leer_stop()
-    '''texto = leer_archivo( archivo )
-    dip   = contar_palabras( texto )
+    topes=leer_stop('spanish_stopwords.txt')
+    #print(topes)
+    texto = leer_archivo( archivo )
+    dipo   = contar_palabras( texto )
+    dip  = limpiar(dipo,topes)
     #print(dip)
-    imprime_diccionario(dip,minimo)'''
+    #print(dip)
+    imprime_diccionario(dip,minimo)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
