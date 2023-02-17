@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import argparse
-
+#comentario default
 #funcion para leer archivo
 def leer_archivo( archivo ):
     try:
